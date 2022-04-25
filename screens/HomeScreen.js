@@ -40,65 +40,41 @@ function jajjs() {
     </View>
   );
 }
-function ListKeys() {
-  let [service, setService] = React.useState("");
-  let [HomeKeyList, setHomeKeyList] = React.useState("");
 
-  async function getChaves() {
-    try {
-      const response = await axios.get('http://192.168.1.15:10004/portaria/chaves');
-      console.log(response.data);
-      setHomeKeyList(response.data);
-    } catch (error) {
-      console.error(error);
-    }
+
+export default function HomeScreen({ navigation }) {
+  let [HomeKeyList, setHomeKeyList] = React.useState("");
+  let [isRefreshing, setIsRefreshing] = React.useState(false);
+
+
+
+
+  function getChaves() {
+    axios
+      .get("http://192.168.1.15:10004/portaria/chaves", {
+        params: {
+          validas: "true"
+        },
+      })
+      .then(function (response) {
+        setHomeKeyList(response.data);
+        console.log(response.data[1])
+      });
+
   }
   useEffect(() => {
     getChaves();
   }, []);
+  const onRefresh = () => {
+    setIsRefreshing(true)
+    getChaves()
+    setIsRefreshing(false)
+}
 
   function SolicitarChave(Sala) {
     alert(Sala)
   }
 
-
-
-  return (
-    <FlatList
-      w={'95%'}
-      h={'80%'}
-      numColumns={3}
-      columnWrapperStyle={{
-        flex: 1,
-        justifyContent: "space-around",
-        marginLeft: 10,
-        marginBottom: 10
-      }}
-      marginTop={2}
-      showsVerticalScrollIndicator={false}
-      data={HomeKeyList}
-      renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => SolicitarChave(item.Sala)}>
-          <View marginBottom={1} alignItems={'center'} bg={"light.50"} borderRadius={5} w={16} h={59} p={1} shadow={0.9}>
-            <HStack>
-              <VStack>
-                <Heading size={"sm"}>
-                  Sala
-                </Heading>
-                <Heading>
-                  {item.Sala}
-                </Heading>
-              </VStack>
-            </HStack>
-          </View>
-        </TouchableOpacity>
-      )}
-      keyExtractor={(item) => item.id}
-    />
-  );
-}
-
-export default function HomeScreen({ navigation }) {
 
   return (
     <NativeBaseProvider>
@@ -111,10 +87,50 @@ export default function HomeScreen({ navigation }) {
         </Box>
         <Center>
           <Heading size={'sm'} marginBottom={2}>
-            Salas disponíveis 
+            Salas disponíveis
           </Heading>
         </Center>
-        <ListKeys />
+
+
+
+        <FlatList
+         onRefresh={onRefresh}
+         refreshing={isRefreshing}
+
+
+          w={'95%'}
+          h={'80%'}
+          numColumns={3}
+          columnWrapperStyle={{
+            flex: 1,
+            justifyContent: "space-around",
+            marginLeft: 10,
+            marginBottom: 10
+          }}
+          marginTop={2}
+          showsVerticalScrollIndicator={false}
+          data={HomeKeyList}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => SolicitarChave(item.Sala)}>
+              <View marginBottom={1} alignItems={'center'} bg={"light.50"} borderRadius={5} w={16} h={59} p={1} shadow={0.9}>
+                <HStack>
+                  <VStack>
+                    <Heading size={"sm"}>
+                      Sala
+                    </Heading>
+                    <Heading>
+                      {item.Sala}
+                    </Heading>
+                  </VStack>
+                </HStack>
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.id}
+        />
+
+
+
       </View>
     </NativeBaseProvider>
   );
