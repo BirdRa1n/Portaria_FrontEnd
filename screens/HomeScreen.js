@@ -16,7 +16,8 @@ import {
   Select,
   CheckIcon,
   useDisclose,
-  Actionsheet
+  Actionsheet,
+  Divider
 } from "native-base";
 import { useState, useEffect } from "react";
 import { TouchableOpacity } from "react-native";
@@ -94,17 +95,19 @@ export default function HomeScreen({ navigation }) {
   return (
     <NativeBaseProvider>
       <View w={"100%"} h={"100%"} bg={'light.100'}>
-        <Box p={2} safeArea>
-          <Center>
-            <Button w={75} bg={'green.500'} colorScheme={'green'} startIcon={<AntDesign name="qrcode" size={40} color="black" />}></Button>
-            <Text>Checkar QRCode</Text>
-          </Center>
+        <Box p={2} safeArea shadow={1}>
+          <HStack>
+            <Image source={{
+              uri: "https://pbs.twimg.com/profile_images/438771627854024704/Az4OY07a_400x400.png"
+            }} alt="Alternate Text" size="sm" />
+            <Center marginLeft={'18%'}>
+              <Button onPress={()=>alert('Leitura de QRCode ainda não está disponível')} w={75} h={51} bg={'green.500'} colorScheme={'green'} startIcon={<AntDesign name="qrcode" size={40} color="black" />}></Button>
+              <Text>Checkar QRCode</Text>
+            </Center>
+          </HStack>
+
         </Box>
-        <Center>
-          <Heading size={'sm'} marginBottom={2}>
-            Salas disponíveis
-          </Heading>
-        </Center>
+
 
 
 
@@ -150,12 +153,12 @@ export default function HomeScreen({ navigation }) {
           <Actionsheet isOpen={isOpen} onClose={onClose}>
             <Actionsheet.Content>
               <Box w="100%" px={4} justifyContent="center">
-               
-                <Text marginBottom={21} fontSize={'md'}>Deseja solicitar a chave da sala {ActionsheetSalainfo.Sala}?</Text>
+                <Heading fontSize={18}>Deseja solicitar a chave da sala {ActionsheetSalainfo.Sala}?</Heading>
+                <Text marginBottom={21} fontSize={'md'}>{ActionsheetSalainfo.Descricao}</Text>
                 <Center marginBottom={50}>
                   <HStack space={2}>
-                    <Button w={120} bg={'green.700'} colorScheme={'green'}>Sim</Button>
-                    <Button onPress={()=> onClose(false)} w={120} bg={'white'} shadow={1} _text={{color: 'black'}} colorScheme={'red'}>Não</Button>
+                    <Button onPress={()=>alert('Você não tem permissão para solicitar chaves')} w={120} bg={'green.700'} colorScheme={'green'}>Sim</Button>
+                    <Button onPress={() => onClose(false)} w={120} bg={'white'} shadow={1} _text={{ color: 'black' }} colorScheme={'red'}>Não</Button>
                   </HStack>
                 </Center>
               </Box>
