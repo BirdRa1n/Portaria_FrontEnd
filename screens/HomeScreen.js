@@ -15,6 +15,8 @@ import {
   Button,
   Select,
   CheckIcon,
+  useDisclose,
+  Actionsheet
 } from "native-base";
 import { useState, useEffect } from "react";
 import { TouchableOpacity } from "react-native";
@@ -45,6 +47,7 @@ function jajjs() {
 export default function HomeScreen({ navigation }) {
   let [HomeKeyList, setHomeKeyList] = React.useState("");
   let [isRefreshing, setIsRefreshing] = React.useState(false);
+  let [ActionsheetSalainfo, setActionsheetSalainfo] = React.useState("");
 
 
 
@@ -69,10 +72,22 @@ export default function HomeScreen({ navigation }) {
     setIsRefreshing(true)
     getChaves()
     setIsRefreshing(false)
-}
+  }
+  const {
+    isOpen,
+    onOpen,
+    onClose
+  } = useDisclose();
 
-  function SolicitarChave(Sala) {
-    alert(Sala)
+
+  function SolicitarChave(Sala, Descricao, Status) {
+    onOpen()
+    const info = {
+      Sala: Sala,
+      Descricao: Descricao,
+      Status: Status
+    }
+    setActionsheetSalainfo(info)
   }
 
 
@@ -94,8 +109,8 @@ export default function HomeScreen({ navigation }) {
 
 
         <FlatList
-         onRefresh={onRefresh}
-         refreshing={isRefreshing}
+          onRefresh={onRefresh}
+          refreshing={isRefreshing}
 
 
           w={'95%'}
@@ -111,8 +126,8 @@ export default function HomeScreen({ navigation }) {
           showsVerticalScrollIndicator={false}
           data={HomeKeyList}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => SolicitarChave(item.Sala)}>
-              <View marginBottom={1} alignItems={'center'} bg={"light.50"} borderRadius={5} w={16} h={59} p={1} shadow={0.9}>
+            <TouchableOpacity onPress={() => SolicitarChave(item.Sala, item.Descricao, item.Status)}>
+              <Box marginBottom={1} alignItems={'center'} bg={"light.50"} borderRadius={5} w={16} h={59} p={1} shadow={1}>
                 <HStack>
                   <VStack>
                     <Heading size={"sm"}>
@@ -123,11 +138,31 @@ export default function HomeScreen({ navigation }) {
                     </Heading>
                   </VStack>
                 </HStack>
-              </View>
+              </Box>
             </TouchableOpacity>
           )}
           keyExtractor={(item) => item.id}
         />
+
+
+
+        <Center>
+          <Actionsheet isOpen={isOpen} onClose={onClose}>
+            <Actionsheet.Content>
+              <Box w="100%" px={4} justifyContent="center">
+               
+                <Text marginBottom={21} fontSize={'md'}>Deseja solicitar a chave da sala {ActionsheetSalainfo.Sala}?</Text>
+                <Center marginBottom={50}>
+                  <HStack space={2}>
+                    <Button w={120} bg={'green.700'} colorScheme={'green'}>Sim</Button>
+                    <Button onPress={()=> onClose(false)} w={120} bg={'white'} shadow={1} _text={{color: 'black'}} colorScheme={'red'}>Não</Button>
+                  </HStack>
+                </Center>
+              </Box>
+
+            </Actionsheet.Content>
+          </Actionsheet>
+        </Center>
 
 
 
