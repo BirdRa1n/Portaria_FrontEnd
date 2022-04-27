@@ -48,16 +48,16 @@ function jajjs() {
 export default function HomeScreen({ navigation }) {
   let [HomeKeyList, setHomeKeyList] = React.useState("");
   let [isRefreshing, setIsRefreshing] = React.useState(false);
-  let [ActionsheetSalainfo, setActionsheetSalainfo] = React.useState("");
+  let [ActionsheetHallInfo, setActionsheetHallInfo] = React.useState("");
 
 
 
 
-  function getChaves() {
+  function getKeys() {
     axios
-      .get("http://192.168.1.15:10004/portaria/chaves", {
+      .get("http://192.168.1.15:10004/portaria/keys", {
         params: {
-          validas: "true"
+          filter: "free"
         },
       })
       .then(function (response) {
@@ -67,11 +67,11 @@ export default function HomeScreen({ navigation }) {
 
   }
   useEffect(() => {
-    getChaves();
+    getKeys();
   }, []);
   const onRefresh = () => {
     setIsRefreshing(true)
-    getChaves()
+    getKeys()
     setIsRefreshing(false)
   }
   const {
@@ -81,14 +81,15 @@ export default function HomeScreen({ navigation }) {
   } = useDisclose();
 
 
-  function SolicitarChave(Sala, Descricao, Status) {
+  function ActionSheetRequestKey(hall, description, status, conveyer) {
     onOpen()
     const info = {
-      Sala: Sala,
-      Descricao: Descricao,
-      Status: Status
+      hall: hall,
+      description: description,
+      status: status,
+      conveyer, conveyer
     }
-    setActionsheetSalainfo(info)
+    setActionsheetHallInfo(info)
   }
 
 
@@ -129,7 +130,7 @@ export default function HomeScreen({ navigation }) {
           showsVerticalScrollIndicator={false}
           data={HomeKeyList}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => SolicitarChave(item.Sala, item.Descricao, item.Status)}>
+            <TouchableOpacity onPress={() => ActionSheetRequestKey(item.hall, item.description, item.status, item.conveyer)}>
               <Box marginBottom={1} alignItems={'center'} bg={"light.50"} borderRadius={5} w={16} h={59} p={1} shadow={1}>
                 <HStack>
                   <VStack>
@@ -137,7 +138,7 @@ export default function HomeScreen({ navigation }) {
                       Sala
                     </Heading>
                     <Heading>
-                      {item.Sala}
+                      {item.hall}
                     </Heading>
                   </VStack>
                 </HStack>
@@ -153,8 +154,8 @@ export default function HomeScreen({ navigation }) {
           <Actionsheet isOpen={isOpen} onClose={onClose}>
             <Actionsheet.Content>
               <Box w="100%" px={4} justifyContent="center">
-                <Heading fontSize={18}>Deseja solicitar a chave da sala {ActionsheetSalainfo.Sala}?</Heading>
-                <Text marginBottom={21} fontSize={'md'}>{ActionsheetSalainfo.Descricao}</Text>
+                <Heading fontSize={18}>Deseja solicitar a chave da sala {ActionsheetHallInfo.hall}?</Heading>
+                <Text marginBottom={21} fontSize={'md'}>{ActionsheetHallInfo.description}</Text>
                 <Center marginBottom={50}>
                   <HStack space={2}>
                     <Button onPress={() => alert('Você não tem permissão para solicitar chaves OK?')} w={120} bg={'green.700'} colorScheme={'green'}>Sim</Button>
