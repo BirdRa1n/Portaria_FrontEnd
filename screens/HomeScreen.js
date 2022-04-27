@@ -101,7 +101,7 @@ export default function HomeScreen({ navigation }) {
               uri: "https://pbs.twimg.com/profile_images/438771627854024704/Az4OY07a_400x400.png"
             }} alt="Alternate Text" size="sm" />
             <Center marginLeft={'18%'}>
-              <Button onPress={()=>alert('Leitura de QRCode ainda não está disponível')} w={75} h={51} bg={'green.500'} colorScheme={'green'} startIcon={<AntDesign name="qrcode" size={40} color="black" />}></Button>
+              <Button onPress={() => alert('Leitura de QRCode ainda não está disponível')} w={75} h={51} bg={'green.500'} colorScheme={'green'} startIcon={<AntDesign name="qrcode" size={40} color="black" />}></Button>
               <Text>Checkar QRCode</Text>
             </Center>
           </HStack>
@@ -157,7 +157,7 @@ export default function HomeScreen({ navigation }) {
                 <Text marginBottom={21} fontSize={'md'}>{ActionsheetSalainfo.Descricao}</Text>
                 <Center marginBottom={50}>
                   <HStack space={2}>
-                    <Button onPress={()=>alert('Você não tem permissão para solicitar chaves OK?')} w={120} bg={'green.700'} colorScheme={'green'}>Sim</Button>
+                    <Button onPress={() => alert('Você não tem permissão para solicitar chaves OK?')} w={120} bg={'green.700'} colorScheme={'green'}>Sim</Button>
                     <Button onPress={() => onClose(false)} w={120} bg={'white'} shadow={1} _text={{ color: 'black' }} colorScheme={'red'}>Não</Button>
                   </HStack>
                 </Center>
@@ -166,8 +166,6 @@ export default function HomeScreen({ navigation }) {
             </Actionsheet.Content>
           </Actionsheet>
         </Center>
-
-
 
       </View>
     </NativeBaseProvider>
