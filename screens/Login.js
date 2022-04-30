@@ -42,9 +42,9 @@ export default function Login({ navigation }) {
         onOpen,
         onClose
     } = useDisclose();
-    const [id_code, setid_code] = React.useState("");
-    const [password, setPassword] = React.useState("");
     const [statusLogin, setstatusLogin] = React.useState("");
+    const [formData, setData] = React.useState({});
+
     var userError = false
     var pwsError = false
     if(statusLogin.warning_error == "incorrect password"){
@@ -63,15 +63,16 @@ export default function Login({ navigation }) {
 
     function Login() {
         axios
-        .get("http://192.168.1.15:10004/portaria/user/login/", {
+        .get("https://birdra1n.x10.bz/IFPI_PORTARIA/api/user/login/", {
           params: {
-            id_code: id_code,
-            password: password
+            method: 'normal',
+            id_code: formData.id_code,
+            password: formData.password
           },
         })
         .then(function (response) {
           setstatusLogin(response.data);
-          if(response.data.session_token !== undefined){
+          if(response.data.token_session !== undefined){
            
                 navigation.navigate("HomeScreen")
           }
@@ -100,7 +101,9 @@ export default function Login({ navigation }) {
                                             Usuário não encontrado
                                         </FormControl.ErrorMessage>
                                         <Input w={300} mt="1" mb="5" type="username" placeholder="Identificação"
-                                            onChangeText={(value) => setid_code(value)}
+                                            onChangeText={value => setData({ ...formData,
+                                                id_code: value
+                                              })}
                                         ></Input>
                                     </Stack>
                                 </FormControl>
@@ -110,7 +113,9 @@ export default function Login({ navigation }) {
                                             Senha incorreta
                                         </FormControl.ErrorMessage>
                                         <Input mt="1" mb="5" type="password" placeholder="Senha"
-                                            onChangeText={(value) => setPassword(value)}
+                                            onChangeText={value => setData({ ...formData,
+                                                password: value
+                                              })}
                                         ></Input>
                                     </Stack>
                                 </FormControl>

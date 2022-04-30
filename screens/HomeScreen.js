@@ -55,9 +55,9 @@ export default function HomeScreen({ navigation }) {
 
   function getKeys() {
     axios
-      .get("http://192.168.1.15:10004/portaria/keys", {
+      .get("https://birdra1n.x10.bz/IFPI_PORTARIA/api/keys/list", {
         params: {
-          filter: "free"
+          filter: "all"
         },
       })
       .then(function (response) {
