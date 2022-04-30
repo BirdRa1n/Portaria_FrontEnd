@@ -28,10 +28,13 @@ import {
 
 } from "native-base";
 
+
 import { useState, useEffect } from "react";
 import { TouchableOpacity } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 
@@ -47,39 +50,48 @@ export default function Login({ navigation }) {
 
     var userError = false
     var pwsError = false
-    if(statusLogin.warning_error == "incorrect password"){
+    if (statusLogin.warning_error == "incorrect password") {
         var pwsError = true
-    }else{
+    } else {
         var pwsError = false
     }
-    if(statusLogin.warning_error == "user does not exist"){
+    if (statusLogin.warning_error == "user does not exist") {
         var userError = true
-    }else{
+    } else {
         var userError = false
     }
-  
+
 
 
 
     function Login() {
         axios
-        .get("https://birdra1n.x10.bz/IFPI_PORTARIA/api/user/login/", {
-          params: {
-            method: 'normal',
-            id_code: formData.id_code,
-            password: formData.password
-          },
-        })
-        .then(function (response) {
-          setstatusLogin(response.data);
-          if(response.data.token_session !== undefined){
-           
-                navigation.navigate("HomeScreen")
-          }
-        });
+            .get("https://birdra1n.x10.bz/IFPI_PORTARIA/api/user/login/", {
+                params: {
+                    method: 'normal',
+                    id_code: formData.id_code,
+                    password: formData.password
+                },
+            })
+            .then(function (response) {
+                setstatusLogin(response.data);
+                storeData(response.data)
 
+                if (response.data.token_session !== undefined) {
+                    navigation.navigate('HomeScreen');
+                }
+
+            });
 
     }
+    const storeData = async (value) => {
+        try {
+          const jsonValue = JSON.stringify(value)
+          await AsyncStorage.setItem('@data_user', jsonValue)
+        } catch (e) {
+          console.log('erro ao efetuar o estado '+e)
+        }
+      }
 
 
     return (
@@ -101,9 +113,10 @@ export default function Login({ navigation }) {
                                             Usuário não encontrado
                                         </FormControl.ErrorMessage>
                                         <Input w={300} mt="1" mb="5" type="username" placeholder="Identificação"
-                                            onChangeText={value => setData({ ...formData,
+                                            onChangeText={value => setData({
+                                                ...formData,
                                                 id_code: value
-                                              })}
+                                            })}
                                         ></Input>
                                     </Stack>
                                 </FormControl>
@@ -113,14 +126,15 @@ export default function Login({ navigation }) {
                                             Senha incorreta
                                         </FormControl.ErrorMessage>
                                         <Input mt="1" mb="5" type="password" placeholder="Senha"
-                                            onChangeText={value => setData({ ...formData,
+                                            onChangeText={value => setData({
+                                                ...formData,
                                                 password: value
-                                              })}
+                                            })}
                                         ></Input>
                                     </Stack>
                                 </FormControl>
 
-                                <Button mb="4" bg={'green.500'} colorScheme={'green'} shadow={1} onPress={()=> Login()}>Entrar</Button>
+                                <Button mb="4" bg={'green.500'} colorScheme={'green'} shadow={1} onPress={() => Login()}>Entrar</Button>
 
                             </VStack>
                         </Center>
@@ -147,8 +161,8 @@ export default function Login({ navigation }) {
             <Box w={'100%'} h={'100%'} safeArea justifyContent="space-between">
                 <Box marginTop={'20%'} p={7}>
                     <Image source={{
-                        uri: "https://www.ifpi.edu.br/topo_ifpi_pedroii.png"
-                    }} alt="Alternate Text" size={83} />
+                        uri: "https://images2.imgbox.com/12/86/F226Ymq3_o.png"
+                    }} alt="Alternate Text" size={93} />
                     <Center marginTop={10}>
                         <Heading>SISTEMA DE PORTARIA IFPI</Heading>
                     </Center>

@@ -20,7 +20,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from '@expo/vector-icons'; 
 
 
-export default function Historico({ route, navigation }) {
+export default function Solicitacoes({ route, navigation }) {
   return(
     <NativeBaseProvider>
       

@@ -23,29 +23,16 @@ import { useState, useEffect } from "react";
 import { TouchableOpacity } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
-function jajjs() {
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Home Screen</Text>
-      <Button
-        title="Go to Details"
-        onPress={() => {
-          /* 1. Navigate to the Details route with params */
-          navigation.navigate("Historico", {
-            itemId: 86,
-            otherParam: "anything you want here",
-          });
-        }}
-      />
-    </View>
-  );
-}
 
 
-export default function HomeScreen({ navigation }) {
+
+export default function HomeScreen({ route, navigation }) {
+
+  const [dataUser, setdataUser] = React.useState({});
   let [HomeKeyList, setHomeKeyList] = React.useState("");
   let [isRefreshing, setIsRefreshing] = React.useState(false);
   let [ActionsheetHallInfo, setActionsheetHallInfo] = React.useState("");
@@ -64,10 +51,22 @@ export default function HomeScreen({ navigation }) {
         setHomeKeyList(response.data);
         console.log(response.data[1])
       });
-
   }
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('@data_user')
+      setdataUser(JSON.parse(jsonValue))
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
+  
+
+
   useEffect(() => {
     getKeys();
+    getData();
   }, []);
   const onRefresh = () => {
     setIsRefreshing(true)
@@ -101,10 +100,11 @@ export default function HomeScreen({ navigation }) {
             <Image source={{
               uri: "https://pbs.twimg.com/profile_images/438771627854024704/Az4OY07a_400x400.png"
             }} alt="Alternate Text" size="sm" />
-            <Center marginLeft={'18%'}>
-              <Button onPress={() => alert('Leitura de QRCode ainda não está disponível')} w={75} h={51} bg={'green.500'} colorScheme={'green'} startIcon={<AntDesign name="qrcode" size={40} color="black" />}></Button>
-              <Text>Checkar QRCode</Text>
-            </Center>
+            <View marginLeft={'2%'}>
+              <Heading size={'sm'}>{dataUser.name}</Heading>
+              <Text fontSize={10}>{dataUser.description}</Text>
+              <Text fontSize={10} top={2}>INSTITUTO FEDERAL CAMPUS PEDRO II</Text>
+            </View>
           </HStack>
 
         </Box>

@@ -3,10 +3,13 @@ import { View, Text, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
-import Historico from './screens/Historico';
+import Solicitacoes from './screens/Solicitacoes';
+import { Account } from './screens/Account';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Login from './screens/Login';
+import { SSRProvider } from '@react-aria/ssr'
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -20,10 +23,12 @@ function Home() {
 
           if (route.name === 'Chaves') {
             iconName = focused
-              ? 'home'
-              : 'home';
-          } else if (route.name === 'Histórico') {
-            iconName = focused ? 'ios-list' : 'ios-list';
+              ? 'ios-home-outline'
+              : 'ios-home-sharp';
+          } else if (route.name === 'Solicitações') {
+            iconName = focused ? 'reorder-three-sharp' : 'reorder-three-sharp';
+          } else if (route.name === 'Conta') {
+            iconName = focused ? 'person-circle-outline' : 'person-circle';
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -32,18 +37,22 @@ function Home() {
       })}
     >
       <Tab.Screen name="Chaves" component={HomeScreen} options={{ headerShown: false, headerTitle: 'Portaria' }} />
-      <Tab.Screen name="Histórico" component={Historico} />
+      <Tab.Screen name="Solicitações" component={Solicitacoes} />
+      <Tab.Screen name="Conta" component={Account} ></Tab.Screen>
     </Tab.Navigator>
   );
 }
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={Login}>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="HomeScreen" component={Home} />
-        <Stack.Screen name="Historico" component={Historico} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SSRProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={Login}>
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="HomeScreen" component={Home} />
+          <Stack.Screen name="Solicitações" component={Solicitacoes} />
+          <Stack.Screen name="Account" component={Account} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SSRProvider>
   );
 }
