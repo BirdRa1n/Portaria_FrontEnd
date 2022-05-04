@@ -176,7 +176,7 @@ export default function Login({ navigation }) {
                 <Box marginTop={'20%'} p={7}>
                     <Image source={{
                         uri: "https://images2.imgbox.com/12/86/F226Ymq3_o.png"
-                    }} alt="Alternate Text" size={93} />
+                    }} alt="Alternate Text" size={120} />
                     <Center marginTop={10}>
                         <Heading>SISTEMA DE PORTARIA IFPI</Heading>
                     </Center>
