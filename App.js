@@ -8,6 +8,7 @@ import { Account } from './screens/Account';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Login from './screens/Login';
+import QR from './screens/QR';
 import { SSRProvider } from '@react-aria/ssr'
 
 
@@ -51,6 +52,7 @@ export default function App() {
           <Stack.Screen name="HomeScreen" component={Home} />
           <Stack.Screen name="Solicitações" component={Solicitacoes} />
           <Stack.Screen name="Account" component={Account} />
+          <Stack.Screen name="QR" component={QR} />
         </Stack.Navigator>
       </NavigationContainer>
     </SSRProvider>

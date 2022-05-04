@@ -34,6 +34,7 @@ import { TouchableOpacity } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 
 
 
@@ -47,6 +48,8 @@ export default function Login({ navigation }) {
     } = useDisclose();
     const [statusLogin, setstatusLogin] = React.useState("");
     const [formData, setData] = React.useState({});
+    const [hasPermission, setHasPermission] = useState(null);
+    const [scanned, setScanned] = useState(false);
 
     var userError = false
     var pwsError = false
@@ -61,10 +64,13 @@ export default function Login({ navigation }) {
         var userError = false
     }
 
-
+   
 
 
     function Login() {
+        if (formData.id_code == '' || formData.password == '') {
+            alert('Problema no formulário');
+        }
         axios
             .get("https://birdra1n.x10.bz/IFPI_PORTARIA/api/user/login/", {
                 params: {
@@ -86,18 +92,26 @@ export default function Login({ navigation }) {
     }
     const storeData = async (value) => {
         try {
-          const jsonValue = JSON.stringify(value)
-          await AsyncStorage.setItem('@data_user', jsonValue)
+            const jsonValue = JSON.stringify(value)
+            await AsyncStorage.setItem('@data_user', jsonValue)
         } catch (e) {
-          console.log('erro ao efetuar o estado '+e)
+            console.log('erro ao efetuar o estado ' + e)
         }
-      }
+    }
 
 
     return (
         <NativeBaseProvider>
             <Actionsheet isOpen={isOpen} onClose={onClose} >
                 <Actionsheet.Content>
+
+
+                    <HStack w={'100%'} top={-10}>
+                        <View w={'81%'}></View>
+                        <TouchableOpacity onPress={(onClose)}>
+                            <Heading size={'sm'}>Fechar</Heading>
+                        </TouchableOpacity>
+                    </HStack>
 
                     <KeyboardAvoidingView h={{
                         base: "362px",
@@ -145,7 +159,7 @@ export default function Login({ navigation }) {
                     <Center marginTop={1}>
                         <HStack space={3}>
                             <Center>
-                                <Button shadow={1} onPress={() => alert('Login por QRCode ainda não está disponível')} w={75} h={51} bg={'green.500'} colorScheme={'green'} startIcon={<AntDesign name="qrcode" size={40} color="black" />}></Button>
+                                <Button shadow={1} onPress={() => navigation.navigate('QR')} w={75} h={51} bg={'green.500'} colorScheme={'green'} startIcon={<AntDesign name="qrcode" size={40} color="black" />}></Button>
                                 <Text> QRCode</Text>
                             </Center>
                             <Center>
