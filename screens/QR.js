@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-
-export default function QR() {
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+export default function QR({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
@@ -15,8 +16,43 @@ export default function QR() {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    const dataqr = JSON.parse(data)
+    if (dataqr.QRtoken !== undefined) {
+      Login(dataqr.QRtoken)
+    } else {
+      alert("QRCode inválido")
+    }
+
   };
+  const storeData = async (value) => {
+    try {
+      const jsonValue = JSON.stringify(value)
+      await AsyncStorage.setItem('@data_user', jsonValue)
+    } catch (e) {
+      console.log('erro ao efetuar o estado ' + e)
+    }
+  }
+
+  function Login(value) {
+
+    axios
+      .get("https://birdra1n.x10.bz/IFPI_PORTARIA/api/user/login/", {
+        params: {
+          method: 'QRCode',
+          QRData: value,
+        },
+      })
+      .then(function (response) {
+        storeData(response.data)
+
+        if (response.data.token_session !== undefined) {
+          navigation.navigate('HomeScreen');
+        }
+
+
+      });
+
+  }
 
   if (hasPermission === null) {
     return <Text>Requesting for camera permission</Text>;
@@ -31,7 +67,6 @@ export default function QR() {
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
       />
-      {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
     </View>
   );
 }
