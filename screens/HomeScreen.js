@@ -56,12 +56,12 @@ export default function HomeScreen({ route, navigation }) {
     try {
       const jsonValue = await AsyncStorage.getItem('@data_user')
       setdataUser(JSON.parse(jsonValue))
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
   }
 
-  
+
 
 
   useEffect(() => {
@@ -90,6 +90,33 @@ export default function HomeScreen({ route, navigation }) {
     }
     setActionsheetHallInfo(info)
   }
+  //console.log(dataUser.signature_digital)
+
+  function RequestKey(signature_digital, hall) {
+    axios
+      .get("https://birdra1n.x10.bz/IFPI_PORTARIA/api/keys/request", {
+        params: {
+          signature_digital: signature_digital,
+          hall: hall
+        },
+      })
+      .then(function (response) {
+        console.log(response.data)
+        let responseRequest = response.data
+        if (responseRequest.warning_error !== undefined && responseRequest.warning_error == "Without permission") {
+          alert("Você não tem permissão para solicitar essa chave")
+        }
+        if (responseRequest.warning_error !== undefined && responseRequest.warning_error == "room is busy") {
+          alert("Alguém já reservou essa chave!")
+        }
+    
+        if (responseRequest.success !== undefined && responseRequest.success == "successfully reserved key") {
+          alert("A chave "+hall+" foi reservada com sucesso\n"+"Código de reserva: "+responseRequest.code_request)
+        }
+      
+      });
+  }
+
 
 
   return (
@@ -158,7 +185,7 @@ export default function HomeScreen({ route, navigation }) {
                 <Text marginBottom={21} fontSize={'md'}>{ActionsheetHallInfo.description}</Text>
                 <Center marginBottom={50}>
                   <HStack space={2}>
-                    <Button onPress={() => alert('Você não tem permissão para solicitar chaves OK?')} w={120} bg={'green.700'} colorScheme={'green'}>Sim</Button>
+                    <Button onPress={() => RequestKey(dataUser.signature_digital, ActionsheetHallInfo.hall)} w={120} bg={'green.700'} colorScheme={'green'}>Sim</Button>
                     <Button onPress={() => onClose(false)} w={120} bg={'white'} shadow={1} _text={{ color: 'black' }} colorScheme={'red'}>Não</Button>
                   </HStack>
                 </Center>

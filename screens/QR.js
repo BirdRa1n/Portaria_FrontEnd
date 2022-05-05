@@ -63,10 +63,12 @@ export default function QR({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.box}>
       <BarCodeScanner
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
       />
+      </View>
     </View>
   );
 }
@@ -76,5 +78,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center'
   },
+  box:{
+    width: '60%',
+    height: '80%'
+  }
 });

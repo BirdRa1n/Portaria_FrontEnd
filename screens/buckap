@@ -23,9 +23,7 @@ import {
     Input,
     FormControl,
     Stack,
-    WarningOutlineIcon,
-    AlertDialog,
-    Modal
+    WarningOutlineIcon
 
 
 } from "native-base";
@@ -37,7 +35,6 @@ import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import StyleSheet from "react-native";
 
 
 
@@ -53,26 +50,6 @@ export default function Login({ navigation }) {
     const [formData, setData] = React.useState({});
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
-    const [showModalQR, setShowModalQR] = useState(false);
-
-    useEffect(() => {
-        (async () => {
-            const { status } = await BarCodeScanner.requestPermissionsAsync();
-            setHasPermission(status === 'granted');
-        })();
-    }, []);
-
-    const handleBarCodeScanned = ({ type, data }) => {
-        setScanned(true);
-    const dataqr = JSON.parse(data)
-    if (dataqr.QRtoken !== undefined) {
-        LoginQRCode(dataqr.QRtoken)
-    } else {
-      alert("QRCode inválido")
-    }
-
-    };
-
 
     var userError = false
     var pwsError = false
@@ -87,25 +64,9 @@ export default function Login({ navigation }) {
         var userError = false
     }
 
-    function LoginQRCode(value) {
-        axios
-          .get("https://birdra1n.x10.bz/IFPI_PORTARIA/api/user/login/", {
-            params: {
-              method: 'QRCode',
-              QRData: value,
-            },
-          })
-          .then(function (response) {
-            storeData(response.data)
-    
-            if (response.data.token_session !== undefined) {
-              navigation.navigate('HomeScreen');
-            }
-    
-    
-          });
-    
-      }
+   
+
+
     function Login() {
         if (formData.id_code == '' || formData.password == '') {
             alert('Problema no formulário');
@@ -198,7 +159,7 @@ export default function Login({ navigation }) {
                     <Center marginTop={1}>
                         <HStack space={3}>
                             <Center>
-                                <Button shadow={1} onPress={() => setShowModalQR(true)} w={75} h={51} bg={'green.500'} colorScheme={'green'} startIcon={<AntDesign name="qrcode" size={40} color="black" />}></Button>
+                                <Button shadow={1} onPress={() => navigation.navigate('QR')} w={75} h={51} bg={'green.500'} colorScheme={'green'} startIcon={<AntDesign name="qrcode" size={40} color="black" />}></Button>
                                 <Text> QRCode</Text>
                             </Center>
                             <Center>
@@ -215,32 +176,11 @@ export default function Login({ navigation }) {
                 <Box marginTop={'20%'} p={7}>
                     <Image source={{
                         uri: "https://images2.imgbox.com/12/86/F226Ymq3_o.png"
-                    }} alt="Alternate Text" size={85} />
+                    }} alt="Alternate Text" size={120} />
                     <Center marginTop={10}>
                         <Heading>SISTEMA DE PORTARIA IFPI</Heading>
                     </Center>
                 </Box>
-
-
-
-                <Center>
-                    <Modal isOpen={showModalQR} onClose={() => setShowModalQR(false)}>
-                        <Modal.Content maxWidth="400px">
-                            <Modal.CloseButton />
-                            <Modal.Header>QRCode</Modal.Header>
-                            <Modal.Body>
-                                <Center>
-                                    <BarCodeScanner
-                                        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-                                        style={{ width: '100%', height: 250 }}
-                                    />
-                                </Center>
-                                
-                            </Modal.Body>
-                           
-                        </Modal.Content>
-                    </Modal>
-                </Center>;
 
 
 
@@ -251,7 +191,7 @@ export default function Login({ navigation }) {
                         <Button shadow={2} onPress={() => onOpen()} w={210} h={51} bg={'green.500'} colorScheme={'green'} >Entrar</Button>
                     </Center>
                     <Center>
-                        <Link href="https://github.com/birdra1n">Desenvolvido por BirdRa1n e inhagop2</Link>
+                        <Link href="https://github.com/birdra1n">Desenvolvido por BirdRa1n</Link>
                     </Center>
                 </Box>
             </Box>
