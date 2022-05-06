@@ -64,12 +64,12 @@ export default function Login({ navigation }) {
 
     const handleBarCodeScanned = ({ type, data }) => {
         setScanned(true);
-    const dataqr = JSON.parse(data)
-    if (dataqr.QRtoken !== undefined) {
-        LoginQRCode(dataqr.QRtoken)
-    } else {
-      alert("QRCode inválido")
-    }
+        const dataqr = JSON.parse(data)
+        if (dataqr.QRtoken !== undefined) {
+            LoginQRCode(dataqr.QRtoken)
+        } else {
+            alert("QRCode inválido")
+        }
 
     };
 
@@ -89,23 +89,23 @@ export default function Login({ navigation }) {
 
     function LoginQRCode(value) {
         axios
-          .get("https://birdra1n.x10.bz/IFPI_PORTARIA/api/user/login/", {
-            params: {
-              method: 'QRCode',
-              QRData: value,
-            },
-          })
-          .then(function (response) {
-            storeData(response.data)
-    
-            if (response.data.token_session !== undefined) {
-              navigation.navigate('HomeScreen');
-            }
-    
-    
-          });
-    
-      }
+            .get("https://birdra1n.x10.bz/IFPI_PORTARIA/api/user/login/", {
+                params: {
+                    method: 'QRCode',
+                    QRData: value,
+                },
+            })
+            .then(function (response) {
+                storeData(response.data)
+
+                if (response.data.token_session !== undefined) {
+                    navigation.navigate('HomeScreen');
+                }
+
+
+            });
+
+    }
     function Login() {
         if (formData.id_code == '' || formData.password == '') {
             alert('Problema no formulário');
@@ -235,9 +235,9 @@ export default function Login({ navigation }) {
                                         style={{ width: '100%', height: 250 }}
                                     />
                                 </Center>
-                                
+
                             </Modal.Body>
-                           
+
                         </Modal.Content>
                     </Modal>
                 </Center>;
